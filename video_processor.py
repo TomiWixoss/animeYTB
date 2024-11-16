@@ -56,21 +56,21 @@ def adjust_fontsize(text, base_size=35):
     """Điều chỉnh kích thước chữ dựa trên độ dài văn bản"""
     length = len(text)
     if length > 500:
-        return base_size - 2  # Giảm nhẹ hơn cho văn bản rất dài
+        return base_size - 4  # Giảm mạnh hơn cho văn bản rất dài
     elif length > 400:
-        return base_size - 1.75
+        return base_size - 3.5
     elif length > 300:
-        return base_size - 1.5
+        return base_size - 3
     elif length > 200:
-        return base_size - 1.25
+        return base_size - 2.5
     elif length > 150:
-        return base_size - 1
+        return base_size - 2
     elif length > 100:
-        return base_size - 0.75
+        return base_size - 1.5
     elif length > 80:
-        return base_size - 0.5
+        return base_size - 1
     elif length > 60:
-        return base_size - 0.25
+        return base_size - 0.5
     return base_size
 
 def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_clip, analysis_data):
@@ -640,15 +640,15 @@ def create_anime_video(anime_info, model):
         return ratings.get(rating, rating)
     
     info_text = f"""
-    🌟 Điểm số: {anime_info.get('score', 'N/A')}
-    🎭 Thể loại: {', '.join(genre['name'] for genre in anime_info.get('genres', []))}
-    📺 Số tập: {anime_info.get('episodes', 'N/A')}
-    📌 Tình trạng: {translate_status(anime_info.get('status', 'N/A'))}
-    🎨 Studio: {', '.join(studio['name'] for studio in anime_info.get('studios', []))}
-    ⏱️ Thời lượng: {translate_duration(anime_info.get('duration', 'N/A'))}
-    📅 Thời gian phát sóng: {translate_aired(anime_info.get('aired', {}).get('string', 'N/A'))}
-    🗓️ Mùa: {translate_season(anime_info.get('season', 'N/A'))} {anime_info.get('year', '')}
-    ⚠️ Phân loại: {translate_rating(anime_info.get('rating', 'N/A'))}
+     Điểm số: {anime_info.get('score', 'N/A')}
+     Thể loại: {', '.join(genre['name'] for genre in anime_info.get('genres', []))}
+     Số tập: {anime_info.get('episodes', 'N/A')}
+     Tình trạng: {translate_status(anime_info.get('status', 'N/A'))}
+     Studio: {', '.join(studio['name'] for studio in anime_info.get('studios', []))}
+     Thời lượng: {translate_duration(anime_info.get('duration', 'N/A'))}
+     Thời gian phát sóng: {translate_aired(anime_info.get('aired', {}).get('string', 'N/A'))}
+     Mùa: {translate_season(anime_info.get('season', 'N/A'))} {anime_info.get('year', '')}
+     Phân loại: {translate_rating(anime_info.get('rating', 'N/A'))}
     """
     
     info_fontsize = adjust_fontsize(info_text, base_size=30)

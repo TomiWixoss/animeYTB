@@ -134,8 +134,8 @@ def main(upload_to_youtube_enabled=False):
                 youtube_video_id = None
                 if upload_to_youtube_enabled:
                     # Upload lên YouTube nếu được bật
-                    video_title = f"{anime_info['title']} - AI Anime Preview"
-                    video_description = "Đây là video Anime Preview được tạo bằng AI"
+                    video_title = f"{anime_info['title']} - AI Phân tích Anime"
+                    video_description = "Đây là video phân tích Anime được tạo tự động bằng AI"
                     youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
                     print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")
                 else:
