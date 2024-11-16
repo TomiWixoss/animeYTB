@@ -12,9 +12,6 @@ from youtube_uploader import upload_to_youtube  # Thêm dòng này
 from video_processor import create_anime_video  # Thêm dòng này
 from gemini_handler import GeminiHandler
 
-# Thêm dòng này vào đầu file (thay đổi đường dẫn theo máy của bạn)
-change_settings({"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
-
 # Khởi tạo Firebase
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred, {
