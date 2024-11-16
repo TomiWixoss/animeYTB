@@ -91,7 +91,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
         intro_text = TextClip("ĐIỂM MẠNH & ĐIỂM YẾU",
                             fontsize=60,
                             color='white',
-                            font='DejaVu-Sans',
+                            font='Arial',
                             align='center')
         intro_text = intro_text.set_position('center').set_duration(intro_duration)
         intro_text = intro_text.fx(vfx.fadein, duration=0.5)
@@ -128,7 +128,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
             color='white',
             size=(title_width, None),
             method='caption',
-            font='DejaVu-Sans',
+            font='Arial',
             align='west',
             interline=LINE_SPACING
         ).set_duration(scene_duration)
@@ -149,7 +149,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
         intro_text = TextClip("ĐỐI TƯỢNG KHÁN GIẢ",
                             fontsize=60,
                             color='white',
-                            font='DejaVu-Sans',
+                            font='Arial',
                             align='center')
         intro_text = intro_text.set_position('center').set_duration(intro_duration)
         intro_text = intro_text.fx(vfx.fadein, duration=0.5)
@@ -179,7 +179,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
             color='white',
             size=(title_width, None),
             method='caption',
-            font='DejaVu-Sans',
+            font='Arial',
             align='west',
             interline=LINE_SPACING
         ).set_duration(scene_duration)
@@ -200,7 +200,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
         intro_text = TextClip("ANIME TƯƠNG TỰ",
                             fontsize=60,
                             color='white',
-                            font='DejaVu-Sans',
+                            font='Arial',
                             align='center')
         intro_text = intro_text.set_position('center').set_duration(intro_duration)
         intro_text = intro_text.fx(vfx.fadein, duration=0.5)
@@ -228,7 +228,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
             color='white',
             size=(title_width, None),
             method='caption',
-            font='DejaVu-Sans',
+            font='Arial',
             align='west',
             interline=LINE_SPACING
         ).set_duration(scene_duration)
@@ -249,7 +249,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
         intro_text = TextClip("ĐÁNH GIÁ TỔNG QUAN",
                             fontsize=60,
                             color='white',
-                            font='DejaVu-Sans',
+                            font='Arial',
                             align='center')
         intro_text = intro_text.set_position('center').set_duration(intro_duration)
         intro_text = intro_text.fx(vfx.fadein, duration=0.5)
@@ -276,7 +276,7 @@ def create_analysis_scenes(W, H, image_width, title_width, image_clip, title_cli
             color='white',
             size=(title_width, None),
             method='caption',
-            font='DejaVu-Sans',
+            font='Arial',
             align='west',
             interline=LINE_SPACING
         ).set_duration(scene_duration)
@@ -340,7 +340,7 @@ def create_characters_scene(W, H, image_width, title_width, image_clip, title_cl
     intro_text = TextClip("NHÂN VẬT CHÍNH",
                          fontsize=60,
                          color='white',
-                         font='DejaVu-Sans',
+                         font='Arial',
                          align='center')
     intro_text = intro_text.set_position('center').set_duration(intro_duration)
     intro_text = intro_text.fx(vfx.fadein, duration=0.5)
@@ -438,7 +438,7 @@ def create_characters_scene(W, H, image_width, title_width, image_clip, title_cl
                                color='white',
                                size=(char_width-20, None),
                                method='caption',
-                               font='DejaVu-Sans',
+                               font='Arial',
                                align='center')
             name_y = y + char_img.h + 10
             name_clip = name_clip.set_position((x_offset + (col * char_width) + 10, name_y))
@@ -507,7 +507,7 @@ def create_anime_video(anime_info, model):
                          color='white',
                          size=(title_width, None),
                          method='caption',
-                         font='DejaVu-Sans',
+                         font='Arial',
                          align='west')
     title_clip = title_clip.set_position((image_width + 20, 50))
     title_clip = title_clip.set_duration(8)
@@ -523,7 +523,7 @@ def create_anime_video(anime_info, model):
                            color='white',
                            size=(title_width, None),
                            method='caption',
-                           font='DejaVu-Sans',
+                           font='Arial',
                            align='west')
     synopsis_clip = synopsis_clip.set_position((image_width + 20, 150))
     synopsis_clip = synopsis_clip.set_duration(8)
@@ -537,7 +537,7 @@ def create_anime_video(anime_info, model):
     intro1_text = TextClip("GIỚI THIỆU ANIME",
                           fontsize=60,
                           color='white',
-                          font='DejaVu-Sans',
+                          font='Arial',
                           align='center')
     intro1_text = intro1_text.set_position('center').set_duration(scene1_intro_duration)
     intro1_text = intro1_text.fx(vfx.fadein, duration=0.5)
@@ -572,7 +572,7 @@ def create_anime_video(anime_info, model):
     intro2_text = TextClip("THÔNG TIN CHI TIẾT",
                           fontsize=60,
                           color='white',
-                          font='DejaVu-Sans',
+                          font='Arial',
                           align='center')
     intro2_text = intro2_text.set_position('center').set_duration(scene2_intro_duration)
     intro2_text = intro2_text.fx(vfx.fadein, duration=0.5)
@@ -658,7 +658,7 @@ def create_anime_video(anime_info, model):
         color='white',
         size=(title_width, None),
         method='caption',
-        font='DejaVu-Sans',
+        font='Arial',
         align='west'
     ).set_duration(scene2_duration)
     
@@ -703,7 +703,7 @@ def create_anime_video(anime_info, model):
                        color='white',
                        size=(W-100, None),
                        method='caption',
-                       font='DejaVu-Sans',
+                       font='Arial',
                        align='center')
     cta_text = cta_text.set_position(('center', 'center'))
     cta_text = cta_text.set_duration(scene4_duration)
