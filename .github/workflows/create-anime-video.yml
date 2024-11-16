@@ -54,9 +54,10 @@ jobs:
           echo '${{ secrets.OAUTH_TOKEN }}' > oauth_token.json
 
       - name: Create video and upload
-        
-        run: python main.py
-        
+        env:
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+        run: python main.py --upload
+  
       - name: Upload video artifact
         uses: actions/upload-artifact@v3
         with:
