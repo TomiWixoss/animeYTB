@@ -25,11 +25,9 @@ jobs:
           sudo locale-gen vi_VN.UTF-8
           sudo update-locale LANG=vi_VN.UTF-8
           sudo apt-get install -y imagemagick
-          sudo apt-get install -y fonts-liberation
-          sudo apt-get install -y ttf-mscorefonts-installer
+          sudo apt-get install -y fonts-noto-cjk
           sudo apt-get install -y fonts-noto
           sudo apt-get install -y fonts-dejavu
-          sudo apt-get install -y fonts-urw-base35
           sudo fc-cache -f -v
           
       - name: Configure ImageMagick policy
@@ -57,12 +55,11 @@ jobs:
           echo '${{ secrets.CLIENT_SECRETS }}' > client_secrets.json
           echo '${{ secrets.OAUTH_TOKEN }}' > oauth_token.json
 
-      - name: Create video and upload
+      - name: Create video only (no upload)
         env:
-          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           LANG: vi_VN.UTF-8
           LC_ALL: vi_VN.UTF-8
-        run: python main.py --upload
+        run: python main.py
         
       - name: Upload video artifact
         uses: actions/upload-artifact@v3
