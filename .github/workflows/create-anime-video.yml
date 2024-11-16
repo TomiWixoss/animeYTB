@@ -28,6 +28,12 @@ jobs:
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
           sudo apt-get install -y fonts-noto fonts-noto-extra
           sudo apt-get install -y fonts-dejavu
+          # Thêm cài đặt font Google Noto
+          wget https://noto-website-2.storage.googleapis.com/pkgs/NotoSans-hinted.zip
+          unzip NotoSans-hinted.zip -d NotoSans
+          sudo mkdir -p /usr/share/fonts/noto
+          sudo cp NotoSans/*.ttf /usr/share/fonts/noto/
+          sudo chmod 644 /usr/share/fonts/noto/*.ttf
           
       - name: Configure font cache
         run: |
@@ -39,6 +45,7 @@ jobs:
           <fontconfig>
             <cachedir>/var/cache/fontconfig</cachedir>
             <dir>/usr/share/fonts</dir>
+            <dir>/usr/share/fonts/noto</dir>
             <match target="pattern">
               <test qual="any" name="family">
                 <string>sans-serif</string>
@@ -47,46 +54,21 @@ jobs:
                 <string>Noto Sans</string>
               </edit>
             </match>
-            <match target="pattern">
-              <test name="lang" compare="contains">
-                <string>vi</string>
-              </test>
-              <test name="family">
-                <string>sans-serif</string>
-              </test>
-              <edit name="family" mode="prepend">
-                <string>Noto Sans</string>
-              </edit>
-            </match>
           </fontconfig>
           EOL'
           sudo fc-cache -f -v
+          fc-list | grep -i noto  # Kiểm tra font đã cài đặt
           
       - name: Configure ImageMagick policy
         run: |
           sudo cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml.bak
           sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<policy domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-6/policy.xml
-          sudo sed -i 's/<policy domain="resource" name="width" value="16KP"/<policy domain="resource" name="width" value="64KP"/g' /etc/ImageMagick-6/policy.xml
-          sudo sed -i 's/<policy domain="resource" name="height" value="16KP"/<policy domain="resource" name="height" value="64KP"/g' /etc/ImageMagick-6/policy.xml
           sudo sed -i 's/<policy domain="resource" name="memory" value="256MiB"/<policy domain="resource" name="memory" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
           sudo sed -i 's/<policy domain="resource" name="disk" value="1GiB"/<policy domain="resource" name="disk" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
-          
-      - name: Configure ImageMagick font
-        run: |
-          sudo bash -c 'echo "<?xml version=\"1.0\"?>
-          <!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">
-          <fontconfig>
-            <dir>/usr/share/fonts</dir>
-            <cachedir>/var/cache/fontconfig</cachedir>
-            <match target=\"pattern\">
-              <test qual=\"any\" name=\"family\">
-                <string>sans-serif</string>
-              </test>
-              <edit name=\"family\" mode=\"assign\" binding=\"same\">
-                <string>Noto Sans</string>
-              </edit>
-            </match>
-          </fontconfig>" > /etc/fonts/fonts.conf'
+          # Thêm cấu hình font cho ImageMagick
+          sudo bash -c 'echo "type=Path
+          path=/usr/share/fonts/noto
+          pattern=*.ttf" >> /etc/ImageMagick-6/type.xml'
           
       - name: Install Python dependencies
         run: |
