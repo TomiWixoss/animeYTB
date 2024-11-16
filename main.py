@@ -56,6 +56,7 @@ def create_anime_video(anime_info):
                          color='white',
                          size=(title_width, None),
                          method='caption',
+                         font='Liberation-Sans',
                          align='west')
     title_clip = title_clip.set_position((image_width + 20, 50))
     title_clip = title_clip.set_duration(8)
@@ -70,6 +71,7 @@ def create_anime_video(anime_info):
                            color='white',
                            size=(title_width, None),
                            method='caption',
+                           font='Liberation-Sans',
                            align='west')
     synopsis_clip = synopsis_clip.set_position((image_width + 20, 150))
     synopsis_clip = synopsis_clip.set_duration(8)
