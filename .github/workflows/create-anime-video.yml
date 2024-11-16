@@ -40,6 +40,14 @@ jobs:
           sudo sed -i 's/<policy domain="resource" name="memory" value="256MiB"/<policy domain="resource" name="memory" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
           sudo sed -i 's/<policy domain="resource" name="disk" value="1GiB"/<policy domain="resource" name="disk" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
           
+      - name: Configure ImageMagick font
+        run: |
+          sudo bash -c 'echo "<?xml version=\"1.0\"?>
+          <!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">
+          <fontconfig>
+            <dir>/usr/share/fonts</dir>
+          </fontconfig>" > /etc/fonts/fonts.conf'
+          
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
