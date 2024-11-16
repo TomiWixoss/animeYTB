@@ -461,16 +461,6 @@ def create_characters_scene(W, H, image_width, title_width, image_clip, title_cl
     
     return create_crossfade(scene_intro, scene_main, cross_duration=0.5)
 
-def get_best_vietnamese_font():
-    """Trả về font tốt nhất cho tiếng Việt"""
-    preferred_fonts = [
-        'Noto Sans CJK',
-        'Noto Sans',
-        'DejaVu Sans',
-        'Liberation Sans'
-    ]
-    return preferred_fonts[1]  # Dùng Noto Sans CJK làm font mặc định
-
 def create_anime_video(anime_info, model):
     # Tạo tên file an toàn
     safe_title = sanitize_filename(anime_info['title'])
@@ -512,24 +502,15 @@ def create_anime_video(anime_info, model):
     elif len(anime_info['title']) > 20:
         title_fontsize = 32
 
-    # Cập nhật font cho tất cả TextClip
-    VIETNAMESE_FONT = get_best_vietnamese_font()
-    
-    # Cảnh intro
-    intro_text = TextClip("GIỚI THIỆU ANIME",
-                         fontsize=60,
-                         color='white',
-                         font=VIETNAMESE_FONT,
-                         align='center')
-    
-    # Title clip
     title_clip = TextClip(anime_info['title'], 
                          fontsize=title_fontsize,
                          color='white',
                          size=(title_width, None),
                          method='caption',
-                         font=VIETNAMESE_FONT,
+                         font='Liberation-Sans',
                          align='west')
+    title_clip = title_clip.set_position((image_width + 20, 50))
+    title_clip = title_clip.set_duration(8)
     
     # Sửa phần xử lý synopsis
     synopsis_text = model.summarize_synopsis(anime_info['synopsis'])
@@ -542,7 +523,7 @@ def create_anime_video(anime_info, model):
                            color='white',
                            size=(title_width, None),
                            method='caption',
-                           font=VIETNAMESE_FONT,
+                           font='Liberation-Sans',
                            align='west')
     synopsis_clip = synopsis_clip.set_position((image_width + 20, 150))
     synopsis_clip = synopsis_clip.set_duration(8)
@@ -556,7 +537,7 @@ def create_anime_video(anime_info, model):
     intro1_text = TextClip("GIỚI THIỆU ANIME",
                           fontsize=60,
                           color='white',
-                          font=VIETNAMESE_FONT,
+                          font='Liberation-Sans',
                           align='center')
     intro1_text = intro1_text.set_position('center').set_duration(scene1_intro_duration)
     intro1_text = intro1_text.fx(vfx.fadein, duration=0.5)
@@ -591,7 +572,7 @@ def create_anime_video(anime_info, model):
     intro2_text = TextClip("THÔNG TIN CHI TIẾT",
                           fontsize=60,
                           color='white',
-                          font=VIETNAMESE_FONT,
+                          font='Liberation-Sans',
                           align='center')
     intro2_text = intro2_text.set_position('center').set_duration(scene2_intro_duration)
     intro2_text = intro2_text.fx(vfx.fadein, duration=0.5)
@@ -677,7 +658,7 @@ def create_anime_video(anime_info, model):
         color='white',
         size=(title_width, None),
         method='caption',
-        font=VIETNAMESE_FONT,
+        font='Liberation-Sans',
         align='west'
     ).set_duration(scene2_duration)
     
@@ -722,7 +703,7 @@ def create_anime_video(anime_info, model):
                        color='white',
                        size=(W-100, None),
                        method='caption',
-                       font=VIETNAMESE_FONT,
+                       font='Liberation-Sans',
                        align='center')
     cta_text = cta_text.set_position(('center', 'center'))
     cta_text = cta_text.set_duration(scene4_duration)

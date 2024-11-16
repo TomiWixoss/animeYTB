@@ -1,8 +1,8 @@
 name: Create Anime Video
 
 on:
-#   schedule:
-#     - cron: '0 0,4,8,12,16,20 * * *'  # Chạy 6 lần một ngày: 00:00, 04:00, 08:00, 12:00, 16:00, và 20:00 UTC
+  schedule:
+    - cron: '0 0,4,8,12,16,20 * * *'  # Chạy 6 lần một ngày: 00:00, 04:00, 08:00, 12:00, 16:00, và 20:00 UTC
   workflow_dispatch:      # Cho phép chạy thủ công
 
 jobs:
@@ -21,54 +21,19 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y locales fontconfig
-          sudo locale-gen vi_VN.UTF-8
-          sudo update-locale LANG=vi_VN.UTF-8
           sudo apt-get install -y imagemagick
-          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
-          sudo apt-get install -y fonts-noto fonts-noto-extra
-          sudo apt-get install -y fonts-dejavu
-          # Thêm cài đặt font Google Noto
-          wget https://noto-website-2.storage.googleapis.com/pkgs/NotoSans-hinted.zip
-          unzip NotoSans-hinted.zip -d NotoSans
-          sudo mkdir -p /usr/share/fonts/noto
-          sudo cp NotoSans/*.ttf /usr/share/fonts/noto/
-          sudo chmod 644 /usr/share/fonts/noto/*.ttf
-          
-      - name: Configure font cache
-        run: |
-          sudo mkdir -p /var/cache/fontconfig
-          sudo chmod 777 /var/cache/fontconfig
-          sudo bash -c 'cat > /etc/fonts/local.conf << EOL
-          <?xml version="1.0"?>
-          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-          <fontconfig>
-            <cachedir>/var/cache/fontconfig</cachedir>
-            <dir>/usr/share/fonts</dir>
-            <dir>/usr/share/fonts/noto</dir>
-            <match target="pattern">
-              <test qual="any" name="family">
-                <string>sans-serif</string>
-              </test>
-              <edit name="family" mode="assign" binding="same">
-                <string>Noto Sans</string>
-              </edit>
-            </match>
-          </fontconfig>
-          EOL'
+          sudo apt-get install -y fonts-liberation
+          sudo apt-get install -y ttf-mscorefonts-installer
           sudo fc-cache -f -v
-          fc-list | grep -i noto  # Kiểm tra font đã cài đặt
           
       - name: Configure ImageMagick policy
         run: |
           sudo cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml.bak
           sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<policy domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-6/policy.xml
+          sudo sed -i 's/<policy domain="resource" name="width" value="16KP"/<policy domain="resource" name="width" value="64KP"/g' /etc/ImageMagick-6/policy.xml
+          sudo sed -i 's/<policy domain="resource" name="height" value="16KP"/<policy domain="resource" name="height" value="64KP"/g' /etc/ImageMagick-6/policy.xml
           sudo sed -i 's/<policy domain="resource" name="memory" value="256MiB"/<policy domain="resource" name="memory" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
           sudo sed -i 's/<policy domain="resource" name="disk" value="1GiB"/<policy domain="resource" name="disk" value="8GiB"/g' /etc/ImageMagick-6/policy.xml
-          # Thêm cấu hình font cho ImageMagick
-          sudo bash -c 'echo "type=Path
-          path=/usr/share/fonts/noto
-          pattern=*.ttf" >> /etc/ImageMagick-6/type.xml'
           
       - name: Install Python dependencies
         run: |
@@ -86,10 +51,8 @@ jobs:
           echo '${{ secrets.CLIENT_SECRETS }}' > client_secrets.json
           echo '${{ secrets.OAUTH_TOKEN }}' > oauth_token.json
 
-      - name: Create video only (no upload)
-        env:
-          LANG: vi_VN.UTF-8
-          LC_ALL: vi_VN.UTF-8
+      - name: Create video and upload
+        
         run: python main.py
         
       - name: Upload video artifact
