@@ -133,16 +133,18 @@ def main(upload_to_youtube_enabled=False):
                 
                 youtube_video_id = None
                 if upload_to_youtube_enabled:
-                    # Upload lên YouTube nếu được bật
-                    video_title = f"{anime_info['title']} - AI Phân tích Anime"
-                    video_description = "Đây là video phân tích Anime được tạo tự động bằng AI"
-                    youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
-                    print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")
+                    try:
+                        video_title = f"{anime_info['title']} - AI Phân tích Anime"
+                        video_description = "Đây là video phân tích Anime được tạo tự động bằng AI"
+                        youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
+                        print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")
+                    except Exception as upload_error:
+                        print(f"Lỗi khi upload video lên YouTube: {upload_error}")
+                        return  # Dừng chương trình nếu upload thất bại
                 else:
                     print("Bỏ qua bước upload YouTube (đã tắt)")
                 
                 save_to_database(anime_id, anime_info, video_path, youtube_video_id)
-                
                 print(f"Đã hoàn thành xử lý anime: {anime['title']}")
                 break
             else:
