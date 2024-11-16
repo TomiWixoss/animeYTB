@@ -11,6 +11,8 @@ from google.auth.transport.requests import Request
 from youtube_uploader import upload_to_youtube  # Thêm dòng này
 from video_processor import create_anime_video  # Thêm dòng này
 from gemini_handler import GeminiHandler
+import google.generativeai as genai
+from config import GEMINI_API_KEY
 
 # Khởi tạo Firebase
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -110,8 +112,49 @@ def save_to_database(anime_id, anime_info, video_path, youtube_video_id):
         'created_at': datetime.now().isoformat()
     })
 
+def check_jikan_api():
+    try:
+        response = requests.get("https://api.jikan.moe/v4/anime/1", timeout=10)
+        if response.status_code == 200:
+            print("✓ API Jikan hoạt động bình thường")
+            return True
+        else:
+            print("✗ API Jikan không phản hồi đúng cách")
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"✗ Không thể kết nối đến API Jikan: {e}")
+        return False
+
+def check_gemini_api():
+    try:
+        # Cấu hình và test Gemini
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        response = model.generate_content("Xin chào, đây là tin nhắn test.")
+        
+        if response and response.text:
+            print("✓ API Gemini hoạt động bình thường")
+            return True
+        else:
+            print("✗ API Gemini không phản hồi đúng cách")
+            return False
+            
+    except Exception as e:
+        print(f"✗ Không thể kết nối đến API Gemini: {e}")
+        return False
+
 def main(upload_to_youtube_enabled=False):
-    # Khởi tạo GeminiHandler
+    # Kiểm tra API trước khi chạy
+    if not check_jikan_api():
+        print("Dừng chương trình do API Jikan không hoạt động")
+        return
+
+    if not check_gemini_api():
+        print("Dừng chương trình do API Gemini không hoạt động")
+        return
+        
+    # Khởi tạo GeminiHandler sau khi đã kiểm tra API thành công
     gemini = GeminiHandler()
     
     # Tạo thư mục videos nếu chưa tồn tại
