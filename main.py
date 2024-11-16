@@ -22,6 +22,19 @@ def create_anime_video(anime_info):
     with open("temp_image.jpg", "wb") as f:
         f.write(response.content)
         
+    # Tạo clip từ ảnh
+    image_clip = ImageClip("temp_image.jpg")
+    
+    # Thay đổi kích thước ảnh
+    image_width = 1920  # Full HD width
+    try:
+        from PIL import Image
+        image_clip = image_clip.resize(width=image_width)
+    except Exception as e:
+        print(f"Lỗi khi resize ảnh: {e}")
+        # Thử phương pháp khác
+        image_clip = image_clip.resize(lambda t: 1.0)
+    
     # Thay đổi đường dẫn ImageMagick cho Linux
     if os.name != 'nt':  # Nếu không phải Windows
         change_settings({"IMAGEMAGICK_BINARY": "convert"})
