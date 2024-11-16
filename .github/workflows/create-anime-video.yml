@@ -21,15 +21,37 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y locales
+          sudo apt-get install -y locales fontconfig
           sudo locale-gen vi_VN.UTF-8
           sudo update-locale LANG=vi_VN.UTF-8
           sudo apt-get install -y imagemagick
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
           sudo apt-get install -y fonts-noto fonts-noto-extra
           sudo apt-get install -y fonts-dejavu
+          
+      - name: Configure font cache
+        run: |
+          sudo mkdir -p /var/cache/fontconfig
+          sudo chmod 777 /var/cache/fontconfig
+          sudo bash -c 'cat > /etc/fonts/local.conf << EOL
+          <?xml version="1.0"?>
+          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+          <fontconfig>
+            <cachedir>/var/cache/fontconfig</cachedir>
+            <dir>/usr/share/fonts</dir>
+            <match target="pattern">
+              <test qual="any" name="family">
+                <string>Noto Sans CJK</string>
+              </test>
+              <edit name="family" mode="assign" binding="same">
+                <string>Noto Sans CJK JP</string>
+              </edit>
+            </match>
+          </fontconfig>
+          EOL'
           sudo fc-cache -f -v
-          fc-list | grep -i noto
+          fc-list | grep -i 'noto sans cjk'
+          fc-match "Noto Sans CJK"
           
       - name: Configure ImageMagick policy
         run: |
