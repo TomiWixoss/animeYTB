@@ -35,7 +35,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create video
+      - name: Create service account and client secrets files
+        run: |
+          echo '${{ secrets.SERVICE_ACCOUNT_KEY }}' > serviceAccountKey.json
+          echo '${{ secrets.CLIENT_SECRETS }}' > client_secrets.json
+          echo '${{ secrets.OAUTH_TOKEN }}' > oauth_token.json
+
+      - name: Create video and upload
+        env:
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
         run: python main.py
         
       - name: Upload video artifact

@@ -1,0 +1,6 @@
+videos/
+*.mp4
+*.jpg
+client_secrets.json
+serviceAccountKey.json
+oauth_token.json
