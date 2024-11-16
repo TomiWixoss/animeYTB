@@ -68,6 +68,15 @@ jobs:
           <!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">
           <fontconfig>
             <dir>/usr/share/fonts</dir>
+            <cachedir>/var/cache/fontconfig</cachedir>
+            <match target=\"pattern\">
+              <test qual=\"any\" name=\"family\">
+                <string>Noto Sans</string>
+              </test>
+              <edit name=\"family\" mode=\"assign\" binding=\"same\">
+                <string>Liberation-Sans</string>
+              </edit>
+            </match>
           </fontconfig>" > /etc/fonts/fonts.conf'
           
       - name: Install Python dependencies
