@@ -4,12 +4,13 @@ from moviepy.config import change_settings
 import os
 import firebase_admin
 from firebase_admin import credentials, db
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import os.path
 from google.auth.transport.requests import Request
 from youtube_uploader import upload_to_youtube  # Thêm dòng này
 from video_processor import create_anime_video  # Thêm dòng này
+from gemini_handler import GeminiHandler
 
 # Thêm dòng này vào đầu file (thay đổi đường dẫn theo máy của bạn)
 change_settings({"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
@@ -28,17 +29,73 @@ def get_anime_info(anime_id):
     
     return data['data']
 
+def get_anime_season():
+    current_date = datetime.now()
+    # Lùi lại 1 mùa bằng cách trừ đi 3 tháng
+    adjusted_date = current_date - timedelta(days=90)
+    current_month = adjusted_date.month
+    current_year = adjusted_date.year
+    
+    # Xác định mùa dựa vào tháng đã điều chỉnh
+    if current_month in [1, 2, 3]:
+        season = 'winter'
+    elif current_month in [4, 5, 6]:
+        season = 'spring'
+    elif current_month in [7, 8, 9]:
+        season = 'summer'
+    else:
+        season = 'fall'
+        
+    return current_year, season
+
+def get_previous_season(year, season):
+    seasons = ['winter', 'spring', 'summer', 'fall']
+    current_idx = seasons.index(season)
+    
+    if current_idx == 0:  # Nếu là mùa winter
+        return year - 1, seasons[-1]  # Trả về năm trước và mùa fall
+    else:
+        return year, seasons[current_idx - 1]
+
+def check_season_completed(year, season):
+    ref = db.reference(f'/completed_seasons/{year}/{season}')
+    return ref.get() is not None
+
+def mark_season_completed(year, season):
+    ref = db.reference(f'/completed_seasons/{year}/{season}')
+    ref.set({
+        'completed_at': datetime.now().isoformat()
+    })
+
 def get_seasonal_anime():
-    # Thêm timeout và retry
-    try:
-        url = f"https://api.jikan.moe/v4/seasons/2024/summer"
-        response = requests.get(url, timeout=30)
-        data = response.json()
-        return [anime for anime in data['data'] if anime['type'] == 'TV']
-    except requests.exceptions.RequestException as e:
-        print(f"Lỗi khi kết nối với API: {e}")
-        time.sleep(5)  # Đợi 5 giây trước khi thử lại
-        return get_seasonal_anime()  # Thử lại
+    year, season = get_anime_season()
+    
+    while True:
+        if check_season_completed(year, season):
+            print(f"Mùa {season} {year} đã hoàn thành, chuyển sang mùa trước")
+            year, season = get_previous_season(year, season)
+            continue
+            
+        try:
+            url = f"https://api.jikan.moe/v4/seasons/{year}/{season}"
+            print(f"Đang lấy danh sách anime mùa {season} {year}")
+            response = requests.get(url, timeout=30)
+            data = response.json()
+            anime_list = [anime for anime in data['data'] if anime['type'] == 'TV']
+            
+            # Nếu tất cả anime trong mùa đã được xử lý
+            if all(check_anime_in_database(anime['mal_id']) for anime in anime_list):
+                print(f"Tất cả anime trong mùa {season} {year} đã được xử lý")
+                mark_season_completed(year, season)
+                year, season = get_previous_season(year, season)
+                continue
+                
+            return anime_list
+            
+        except requests.exceptions.RequestException as e:
+            print(f"Lỗi khi kết nối với API: {e}")
+            time.sleep(5)
+            continue
 
 def check_anime_in_database(anime_id):
     # Kiểm tra xem anime đã có trong database chưa
@@ -57,6 +114,9 @@ def save_to_database(anime_id, anime_info, video_path, youtube_video_id):
     })
 
 def main(upload_to_youtube_enabled=False):
+    # Khởi tạo GeminiHandler
+    gemini = GeminiHandler()
+    
     # Tạo thư mục videos nếu chưa tồn tại
     if not os.path.exists('videos'):
         os.makedirs('videos')
@@ -72,13 +132,13 @@ def main(upload_to_youtube_enabled=False):
                 print(f"Đang xử lý anime: {anime['title']}")
                 
                 anime_info = get_anime_info(anime_id)
-                video_path = create_anime_video(anime_info)
+                video_path = create_anime_video(anime_info, gemini)
                 
                 youtube_video_id = None
                 if upload_to_youtube_enabled:
                     # Upload lên YouTube nếu được bật
-                    video_title = f"{anime_info['title']} - Anime Preview"
-                    video_description = anime_info['synopsis']
+                    video_title = f"{anime_info['title']} - AI Anime Preview"
+                    video_description = "Đây là video Anime Preview được tạo bằng AI"
                     youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
                     print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")
                 else:
