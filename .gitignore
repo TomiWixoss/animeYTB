@@ -4,3 +4,4 @@ videos/
 client_secrets.json
 serviceAccountKey.json
 oauth_token.json
+config.py
