@@ -469,7 +469,7 @@ def get_best_vietnamese_font():
         'DejaVu Sans',
         'Liberation Sans'
     ]
-    return preferred_fonts[0]  # Dùng Noto Sans CJK làm font mặc định
+    return preferred_fonts[1]  # Dùng Noto Sans CJK làm font mặc định
 
 def create_anime_video(anime_info, model):
     # Tạo tên file an toàn

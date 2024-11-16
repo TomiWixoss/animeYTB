@@ -41,17 +41,26 @@ jobs:
             <dir>/usr/share/fonts</dir>
             <match target="pattern">
               <test qual="any" name="family">
-                <string>Noto Sans CJK</string>
+                <string>sans-serif</string>
               </test>
               <edit name="family" mode="assign" binding="same">
-                <string>Noto Sans CJK JP</string>
+                <string>Noto Sans</string>
+              </edit>
+            </match>
+            <match target="pattern">
+              <test name="lang" compare="contains">
+                <string>vi</string>
+              </test>
+              <test name="family">
+                <string>sans-serif</string>
+              </test>
+              <edit name="family" mode="prepend">
+                <string>Noto Sans</string>
               </edit>
             </match>
           </fontconfig>
           EOL'
           sudo fc-cache -f -v
-          fc-list | grep -i 'noto sans cjk'
-          fc-match "Noto Sans CJK"
           
       - name: Configure ImageMagick policy
         run: |
@@ -71,10 +80,10 @@ jobs:
             <cachedir>/var/cache/fontconfig</cachedir>
             <match target=\"pattern\">
               <test qual=\"any\" name=\"family\">
-                <string>Noto Sans</string>
+                <string>sans-serif</string>
               </test>
               <edit name=\"family\" mode=\"assign\" binding=\"same\">
-                <string>Liberation-Sans</string>
+                <string>Noto Sans</string>
               </edit>
             </match>
           </fontconfig>" > /etc/fonts/fonts.conf'
