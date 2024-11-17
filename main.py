@@ -144,14 +144,6 @@ def check_gemini_api():
         print(f"✗ Không thể kết nối đến API Gemini: {e}")
         return False
 
-def clean_title(title):
-    # Loại bỏ hoặc thay thế các ký tự đặc biệt có thể gây lỗi
-    cleaned = title.replace('"', '')  # Xóa dấu ngoặc kép
-    cleaned = cleaned.replace("'", '')  # Xóa dấu ngoặc đơn
-    cleaned = cleaned.replace("\\", '')  # Xóa dấu gạch chéo ngược
-    cleaned = cleaned.replace("/", '-')  # Thay thế dấu gạch chéo bằng dấu gạch ngang
-    return cleaned.strip()  # Xóa khoảng trắng thừa ở đầu và cuối
-
 def main(upload_to_youtube_enabled=False):
     # Kiểm tra API trước khi chạy
     if not check_jikan_api():
@@ -185,14 +177,28 @@ def main(upload_to_youtube_enabled=False):
                 youtube_video_id = None
                 if upload_to_youtube_enabled:
                     try:
-                        clean_anime_title = clean_title(anime_info['title'])
-                        video_title = f"{clean_anime_title} - AI Phân tích Anime"
-                        video_description = "Đây là video phân tích Anime được tạo tự động bằng AI"
+                        # Tính toán độ dài tối đa cho tên anime
+                        suffix = " - AI Phân tích Anime"  # 20 ký tự
+                        max_title_length = 100 - len(suffix)  # 80 ký tự cho tên anime
+                        
+                        # Tạo tiêu đề với độ dài phù hợp
+                        anime_title = anime_info['title']
+                        if len(anime_title) > max_title_length:
+                            anime_title = anime_title[:max_title_length-3] + "..."
+                        
+                        video_title = f"{anime_title}{suffix}"
+                        
+                        # Thêm tiêu đề gốc vào phần mô tả
+                        video_description = (
+                            f"Anime: {anime_info['title']}\n\n"
+                            "Đây là video phân tích Anime được tạo tự động bằng AI"
+                        )
+                        
                         youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
                         print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")
                     except Exception as upload_error:
                         print(f"Lỗi khi upload video lên YouTube: {upload_error}")
-                        return  # Dừng chương trình nếu upload thất bại
+                        return
                 else:
                     print("Bỏ qua bước upload YouTube (đã tắt)")
                 
