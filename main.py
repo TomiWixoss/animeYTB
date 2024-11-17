@@ -144,6 +144,14 @@ def check_gemini_api():
         print(f"✗ Không thể kết nối đến API Gemini: {e}")
         return False
 
+def clean_title(title):
+    # Loại bỏ hoặc thay thế các ký tự đặc biệt có thể gây lỗi
+    cleaned = title.replace('"', '')  # Xóa dấu ngoặc kép
+    cleaned = cleaned.replace("'", '')  # Xóa dấu ngoặc đơn
+    cleaned = cleaned.replace("\\", '')  # Xóa dấu gạch chéo ngược
+    cleaned = cleaned.replace("/", '-')  # Thay thế dấu gạch chéo bằng dấu gạch ngang
+    return cleaned.strip()  # Xóa khoảng trắng thừa ở đầu và cuối
+
 def main(upload_to_youtube_enabled=False):
     # Kiểm tra API trước khi chạy
     if not check_jikan_api():
@@ -177,7 +185,8 @@ def main(upload_to_youtube_enabled=False):
                 youtube_video_id = None
                 if upload_to_youtube_enabled:
                     try:
-                        video_title = f"{anime_info['title']} - AI Phân tích Anime"
+                        clean_anime_title = clean_title(anime_info['title'])
+                        video_title = f"{clean_anime_title} - AI Phân tích Anime"
                         video_description = "Đây là video phân tích Anime được tạo tự động bằng AI"
                         youtube_video_id = upload_to_youtube(video_path, video_title, video_description)
                         print(f"Đã upload video lên YouTube với ID: {youtube_video_id}")

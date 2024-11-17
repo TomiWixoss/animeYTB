@@ -6,7 +6,7 @@ def generate_initial_token():
     SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
     
     flow = InstalledAppFlow.from_client_secrets_file(
-        'client_secrets.json',
+        'client_secrets3.json',
         scopes=SCOPES,
         redirect_uri='urn:ietf:wg:oauth:2.0:oob'
     )
